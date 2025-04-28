@@ -3,22 +3,23 @@ import { getCustomer } from "@/lib/queries/getCustomer";
 export default async function GetCustomerForm({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | undefined }>
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   try {
-    const params = await searchParams; // <-- await because now it's a Promise
-
-    console.log('Search Params:', params);
+    // Await the searchParams promise
+    const params = await searchParams;
+    console.log("Search Params:", params);
 
     const customerId = params.customerId;
-    console.log('Customer ID:', customerId);
+    console.log("Customer ID:", customerId);
 
     if (!customerId) {
       return <div>Customer ID is missing</div>;
     }
 
+    // Get customer info using the customer ID
     const customer = await getCustomer(Number(customerId));
-    console.log('Customer:', customer);
+    console.log("Customer:", customer);
 
     if (!customer) {
       return <div>Customer not found</div>;
