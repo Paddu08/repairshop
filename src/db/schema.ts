@@ -32,6 +32,8 @@ export const tickets = pgTable("tickets", {
   customerId: integer("customer_id").notNull().references(() => customers.id),
   title: varchar("title", { length: 100 }),
   description: text("description"),
+  tech: varchar("tech").notNull().default("unassigned"),
+
   status: varchar("status", { length: 20 }).notNull().default("open"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")
