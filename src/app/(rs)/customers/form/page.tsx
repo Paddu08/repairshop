@@ -1,12 +1,16 @@
 import { getCustomer } from "@/lib/queries/getCustomer";
 
-type PageProps = {
-  searchParams: { [key: string]: string | undefined };
-};
+export default async function GetCustomerForm({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
+  try {
+    const params = await searchParams; // <-- await because now it's a Promise
 
-export default async function GetCustomerForm({ searchParams }: PageProps) {
-  try { 
-    const customerId = searchParams.customerId;
+    console.log('Search Params:', params);
+
+    const customerId = params.customerId;
     console.log('Customer ID:', customerId);
 
     if (!customerId) {
@@ -15,7 +19,7 @@ export default async function GetCustomerForm({ searchParams }: PageProps) {
 
     const customer = await getCustomer(Number(customerId));
     console.log('Customer:', customer);
-    
+
     if (!customer) {
       return <div>Customer not found</div>;
     }
@@ -26,7 +30,7 @@ export default async function GetCustomerForm({ searchParams }: PageProps) {
         <form>
           <label>
             First Name:
-            <input type="text" name="fname" />
+            <input type="text" name="fname"  />
           </label>
           <label>
             Last Name:
@@ -36,7 +40,6 @@ export default async function GetCustomerForm({ searchParams }: PageProps) {
             Phone:
             <input type="text" name="phone" />
           </label>
-          {/* Add more fields as needed */}
           <button type="submit">Update</button>
         </form>
       </div>
