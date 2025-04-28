@@ -1,23 +1,20 @@
 import { getCustomer } from "@/lib/queries/getCustomer";
 
-export default async function GetCustomerForm({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | undefined }>
-}) {
-  try { 
-    const params = await searchParams;  // Await the searchParams to ensure they're resolved
-    console.log('Search Params:', params);  // Log the searchParams to see their contents
+type PageProps = {
+  searchParams: { [key: string]: string | undefined };
+};
 
-    const customerId = params.customerId;
-    console.log('Customer ID:', customerId);  // Log the customerId to confirm it's correct
+export default async function GetCustomerForm({ searchParams }: PageProps) {
+  try { 
+    const customerId = searchParams.customerId;
+    console.log('Customer ID:', customerId);
 
     if (!customerId) {
       return <div>Customer ID is missing</div>;
     }
 
     const customer = await getCustomer(Number(customerId));
-    console.log('Customer:', customer);  // Log the customer object to check its contents
+    console.log('Customer:', customer);
     
     if (!customer) {
       return <div>Customer not found</div>;
@@ -29,17 +26,17 @@ export default async function GetCustomerForm({
         <form>
           <label>
             First Name:
-            <input type="text" name="fname"  />
+            <input type="text" name="fname" />
           </label>
           <label>
             Last Name:
-            <input type="text" name="lname"  />
+            <input type="text" name="lname" />
           </label>
           <label>
             Phone:
             <input type="text" name="phone" />
           </label>
-          {/* add more fields as needed */}
+          {/* Add more fields as needed */}
           <button type="submit">Update</button>
         </form>
       </div>
