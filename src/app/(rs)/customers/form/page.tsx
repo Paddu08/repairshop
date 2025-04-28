@@ -3,7 +3,7 @@ import { getCustomer } from "@/lib/queries/getCustomer";
 export default async function GetCustomerForm({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | undefined }>;
+  searchParams: { [key: string]: string | undefined };
 }) {
   try {
     const params = await searchParams; // <-- await because now it's a Promise
