@@ -6,11 +6,10 @@ import TicketForm from "./TicketForm";
 export default async function GetForm({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>
 }) {
   try {
-    const customerId = searchParams.customerId;
-    const ticketId = searchParams.ticketId;
+      const { customerId, ticketId } = await searchParams
 
     if (!customerId && !ticketId) {
       return <div>Either Customer ID or Ticket ID is required</div>;

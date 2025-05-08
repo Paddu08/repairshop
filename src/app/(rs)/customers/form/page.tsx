@@ -4,14 +4,14 @@ import CustomerForm from "./CustomerForm";
 export default async function GetCustomerForm({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>
 }) {
   try {
     const params = await searchParams; // <-- await because now it's a Promise
 
     console.log('Search Params:', params);
 
-    const customerId = params.customerId;
+    const { customerId } = await searchParams
     console.log('Customer ID:', customerId);
 
     if (!customerId) {

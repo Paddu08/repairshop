@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form } from "@/components/ui/form"
   import {
+  InsertCustomerSchemaType,
   insertCustomerSchema,
-  insertTicketSchemaType,
-  type SelectCustomerSchema,
+  SelectCustomerSchemaType
 } from "@/zod-schemas/customer"
 import { InputWithLabels } from "@/components/inputs/InputWithLabels"
 import { Button } from "@/components/ui/button"
@@ -15,11 +15,11 @@ import { SelectWithLabels } from "@/components/inputs/SelectWithLabel"
 
 
 type Props = {
-  customer?: SelectCustomerSchema
+  customer?: SelectCustomerSchemaType
 }
 
 export default function CustomerForm({ customer }: Props) {
-  const defaultValues: insertTicketSchemaType = {
+  const defaultValues: InsertCustomerSchemaType = {
     id: customer?.id ?? 0,
     fname: customer?.fname ?? "",
     lname: customer?.lname ?? "",
@@ -31,13 +31,13 @@ export default function CustomerForm({ customer }: Props) {
     phone: customer?.phone ?? "",
   }
 
-  const form = useForm<insertTicketSchemaType>({
+  const form = useForm<InsertCustomerSchemaType>({
     mode: "onBlur",
     resolver: zodResolver(insertCustomerSchema),
     defaultValues,
   })
 
-  function submitForm(data: insertTicketSchemaType) {
+  function submitForm(data: InsertCustomerSchemaType) {
     console.log(data)
   }
 
@@ -49,25 +49,25 @@ export default function CustomerForm({ customer }: Props) {
           <form onSubmit={form.handleSubmit(submitForm)} className=" flex flex-col  md:flex-row gap-4 md:gap-8">
             <div className="flex flex-col gap-4 w-full max-w-xs">
               
-                <InputWithLabels<insertTicketSchemaType> fieldTitle="First Name"
+                <InputWithLabels<InsertCustomerSchemaType> fieldTitle="First Name"
                     nameinSchema="fname"/>
-                    <InputWithLabels<insertTicketSchemaType> fieldTitle="Last  Name"
+                    <InputWithLabels<InsertCustomerSchemaType> fieldTitle="Last  Name"
                     nameinSchema="lname"/>
-                    <InputWithLabels<insertTicketSchemaType> fieldTitle="Address 1"
+                    <InputWithLabels<InsertCustomerSchemaType> fieldTitle="Address 1"
                     nameinSchema="address1"/>
-                    <InputWithLabels<insertTicketSchemaType> fieldTitle="Address 2"
+                    <InputWithLabels<InsertCustomerSchemaType> fieldTitle="Address 2"
                     nameinSchema="address2"/>
-                     <InputWithLabels<insertTicketSchemaType> fieldTitle="City"
+                     <InputWithLabels<InsertCustomerSchemaType> fieldTitle="City"
                     nameinSchema="city"/>
-                     <InputWithLabels<insertTicketSchemaType> fieldTitle="Zip Code"
+                     <InputWithLabels<InsertCustomerSchemaType> fieldTitle="Zip Code"
                     nameinSchema="zip"/>
                     
                     
                 </div>  
                 <div className="flex flex-col gap-4 w-full max-w-xs">
-                <SelectWithLabels<insertTicketSchemaType> fieldTitle="State"
+                <SelectWithLabels<InsertCustomerSchemaType> fieldTitle="State"
                     nameinSchema="state" data={usStates}/>
-                <InputWithLabels<insertTicketSchemaType> fieldTitle="Phone Number"
+                <InputWithLabels<InsertCustomerSchemaType> fieldTitle="Phone Number"
                     nameinSchema="phone"/>
                                     <div className="flex gap-2">
 

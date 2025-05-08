@@ -6,16 +6,17 @@ import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import {   selectTicketSchemaType, insertTicketSchemaType, insertTicketSchema } from "@/zod-schemas/tickets"
 import { InputWithLabels } from "@/components/inputs/InputWithLabels"
+import { SelectCustomerSchemaType } from "@/zod-schemas/customer"
 
 type Props = {
-  customer: selectTicketSchemaType,
+  customer: SelectCustomerSchemaType,
   ticket?: selectTicketSchemaType,
 }
 
 export default function TicketForm({ customer, ticket }: Props) {
   const defaultValues: insertTicketSchemaType = {
     id: ticket?.id || 0,
-    customerId: ticket?.customerId ?? customer.id,
+    customerId: (ticket?.customerId ?? customer.id)!,
 
     title: ticket?.title || "",
     description: ticket?.description || "",
