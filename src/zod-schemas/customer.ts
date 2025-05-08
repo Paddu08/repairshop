@@ -10,9 +10,12 @@ export const insertCustomerSchema = createInsertSchema(customers, {
   state: (schema) => schema.min(1, "State is required"),
   zip: (schema) => schema.min(1, "ZIP code is required"),
   phone: (schema) => schema.min(1, "Phone number is required"),
+ 
 });
 
 export const selectCustomerSchema = createSelectSchema(customers)
 export type SelectCustomerSchema = typeof selectCustomerSchema._type
 
+export type insertTicketSchemaType = typeof insertCustomerSchema._type
+export type InsertCustomerSchemaType = typeof insertCustomerSchema._type
 
