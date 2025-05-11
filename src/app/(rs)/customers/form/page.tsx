@@ -1,5 +1,18 @@
 import { getCustomer } from "@/lib/queries/getCustomer";
 import CustomerForm from "./CustomerForm";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>
+}) {
+  const { customerId } = await searchParams
+
+  if (!customerId) return { title: "New Customer" }
+
+  return { title: `Edit Customer #${customerId}` }
+}
 
 export default async function GetCustomerForm({
   searchParams,
@@ -7,6 +20,12 @@ export default async function GetCustomerForm({
   searchParams: Promise<{ [key: string]: string | undefined }>
 }) {
   try {
+    const { getPermission } = getKindeServerSession()
+        const managerPermission = await getPermission("Manager")
+        const isManager = managerPermission?.isGranted
+console.log("isManager", isManager)
+
+
     const params = await searchParams; // <-- await because now it's a Promise
 
     console.log('Search Params:', params);
@@ -27,7 +46,7 @@ export default async function GetCustomerForm({
 
     return (
       <div>
-        <CustomerForm customer={customer} />
+        <CustomerForm customer={customer} isManager={isManager}/>
       </div>
     );
   } catch (error) {

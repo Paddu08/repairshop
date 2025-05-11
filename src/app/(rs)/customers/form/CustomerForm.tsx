@@ -12,13 +12,15 @@ import { InputWithLabels } from "@/components/inputs/InputWithLabels"
 import { Button } from "@/components/ui/button"
 import usStates from "@/constants/StatesArray"
 import { SelectWithLabels } from "@/components/inputs/SelectWithLabel"
-
+import { CheckboxWithLabel } from "@/components/inputs/CheckboxWithLabel"
 
 type Props = {
   customer?: SelectCustomerSchemaType
+  isManager?: boolean | undefined
 }
 
-export default function CustomerForm({ customer }: Props) {
+export default function CustomerForm({ customer,isManager= false }: Props) {
+  console.log(isManager)
   const defaultValues: InsertCustomerSchemaType = {
     id: customer?.id ?? 0,
     fname: customer?.fname ?? "",
@@ -59,16 +61,28 @@ export default function CustomerForm({ customer }: Props) {
                     nameinSchema="address2"/>
                      <InputWithLabels<InsertCustomerSchemaType> fieldTitle="City"
                     nameinSchema="city"/>
+
+               
                      <InputWithLabels<InsertCustomerSchemaType> fieldTitle="Zip Code"
                     nameinSchema="zip"/>
+                    
                     
                     
                 </div>  
                 <div className="flex flex-col gap-4 w-full max-w-xs">
                 <SelectWithLabels<InsertCustomerSchemaType> fieldTitle="State"
                     nameinSchema="state" data={usStates}/>
+
+{isManager && customer?.id ? (
+                            <CheckboxWithLabel<InsertCustomerSchemaType>
+                                fieldTitle="Active"
+                                nameInSchema="active"
+                                message="Yes"
+                            />) : null}
                 <InputWithLabels<InsertCustomerSchemaType> fieldTitle="Phone Number"
                     nameinSchema="phone"/>
+
+                    
                                     <div className="flex gap-2">
 
                   <Button type='submit' className="w-3/4" variant="default" title="save"> Save</Button>
