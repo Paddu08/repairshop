@@ -23,7 +23,6 @@ export default async function GetCustomerForm({
     const { getPermission } = getKindeServerSession()
         const managerPermission = await getPermission("Manager")
         const isManager = managerPermission?.isGranted
-console.log("isManager", isManager)
 
 
     const params = await searchParams; // <-- await because now it's a Promise
