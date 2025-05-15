@@ -3,6 +3,9 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form } from "@/components/ui/form"
+import { LoaderCircle } from 'lucide-react'
+import { useToast } from "@/hooks/use-toast"
+
   import {
   InsertCustomerSchemaType,
   insertCustomerSchema,
@@ -12,7 +15,13 @@ import { InputWithLabels } from "@/components/inputs/InputWithLabels"
 import { Button } from "@/components/ui/button"
 import usStates from "@/constants/StatesArray"
 import { SelectWithLabels } from "@/components/inputs/SelectWithLabel"
+
 import { CheckboxWithLabel } from "@/components/inputs/CheckboxWithLabel"
+import { DisplayServerActionResponse } from "@/components/DislayServerAction"
+import { saveCustomerAction } from "@/lib/queries/saveCustomerAction"
+import { useAction } from 'next-safe-action/hooks'
+
+
 
 type Props = {
   customer?: SelectCustomerSchemaType
@@ -32,22 +41,48 @@ export default function CustomerForm({ customer,isManager= false }: Props) {
     zip: customer?.zip ?? "",
     phone: customer?.phone ?? "",
   }
-
+const {toast } = useToast()
   const form = useForm<InsertCustomerSchemaType>({
     mode: "onBlur",
     resolver: zodResolver(insertCustomerSchema),
     defaultValues,
   })
+ const {
+        execute: executeSave,
+        result: saveResult,
+        isPending: isSaving,
+        reset: resetSaveAction,
+    } = useAction(saveCustomerAction, {
+        onSuccess({ data }) {
+            if (data?.message) {
+                toast({
+                    variant: "default",
+                    title: "Success! 🎉",
+                    description: data.message,
+                })
+            }
+        },
+        onError() {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Save Failed",
+            })
+        }
+    })
 
-  function submitForm(data: InsertCustomerSchemaType) {
-    console.log(data)
-  }
+    async function submitForm(data: InsertCustomerSchemaType) {
+        executeSave(data)
+    }
+ 
 
   return (
     <div className="flex flex-col gap-1 md:px-8">
       <div>
         <h2 className="text">Customer form</h2>
         <Form {...form}>
+                      <DisplayServerActionResponse result={saveResult} />
+
           <form onSubmit={form.handleSubmit(submitForm)} className=" flex flex-col  md:flex-row gap-4 md:gap-8">
             <div className="flex flex-col gap-4 w-full max-w-xs">
               
@@ -85,8 +120,22 @@ export default function CustomerForm({ customer,isManager= false }: Props) {
                     
                                     <div className="flex gap-2">
 
-                  <Button type='submit' className="w-3/4" variant="default" title="save"> Save</Button>
-                  <Button type='button'   variant="destructive" title="Reset" onClick={()=>form.reset(defaultValues)}> Reset</Button></div>  
+ <Button
+                                type="submit"
+                                className="w-3/4"
+                                variant="default"
+                                title="Save"
+                                disabled={isSaving}
+                            >
+                                {isSaving ? (
+                                    <>
+                                        <LoaderCircle className="animate-spin" /> Saving
+                                    </>
+                                ) : "Save"}
+                            </Button>
+                  <Button type='button'   variant="destructive" title="Reset" onClick={()=>{form.reset(defaultValues)
+                    resetSaveAction()
+                  }}> Reset</Button></div>  
 
 
                 </div> 

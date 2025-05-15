@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header"
+import { Toaster } from "@/components/ui/toaster"
 
 
 export default async function RSlayout({children,}:{children:React.ReactNode}) {
@@ -9,6 +10,7 @@ export default async function RSlayout({children,}:{children:React.ReactNode}) {
             <div>
                 {children}
             </div>
+            <Toaster/>
         </div>
     )
     
