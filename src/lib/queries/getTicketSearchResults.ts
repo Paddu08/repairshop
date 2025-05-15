@@ -10,7 +10,7 @@ export async function getTicketSearchResults(searchText: string) {
         firstName: customers.fname,
         lastName: customers.lname,
         tech: tickets.tech,
-        status: tickets.status,
+        completed: tickets.completed,
     })
         .from(tickets)
         .leftJoin(customers, eq(tickets.customerId, customers.id))

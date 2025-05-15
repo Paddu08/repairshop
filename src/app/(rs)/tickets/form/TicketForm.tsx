@@ -4,44 +4,53 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
-import {   selectTicketSchemaType, insertTicketSchemaType, insertTicketSchema } from "@/zod-schemas/tickets"
+
 import { InputWithLabels } from "@/components/inputs/InputWithLabels"
-import { SelectCustomerSchemaType } from "@/zod-schemas/customer"
 import { TextareaWithLabels } from "@/components/inputs/TextAreaWithLabel"
-import { DisplayServerActionResponse } from "@/components/DislayServerAction"
-import { LoaderCircle } from "lucide-react"
+import { CheckboxWithLabel } from "@/components/inputs/CheckboxWithLabel"
+
+import { insertTicketSchema, type insertTicketSchemaType, type selectTicketSchemaType } from "@/zod-schemas/tickets"
+import { SelectCustomerSchemaType } from "@/zod-schemas/customer"
+
+import { useAction } from 'next-safe-action/hooks'
 import { saveTicketAction } from "@/app/actions/saveTicketAction"
-import { useAction } from "next-safe-action/hooks"
-
 import { useToast } from '@/hooks/use-toast'
-
-
+import { LoaderCircle } from 'lucide-react'
+import { DisplayServerActionResponse } from "@/components/DislayServerAction"
 
 type Props = {
-  customer: SelectCustomerSchemaType,
-  ticket?: selectTicketSchemaType,
+    customer: SelectCustomerSchemaType,
+    ticket?: selectTicketSchemaType,
+    techs?: {
+        id: string,
+        description: string,
+    }[],
+    isEditable?: boolean,
+    isManager?: boolean | undefined
 }
 
-export default function TicketForm({ customer, ticket }: Props) {
-  const defaultValues: insertTicketSchemaType = {
-    id: ticket?.id ?? "(New)",
-    customerId: (ticket?.customerId ?? customer.id)!,
+export default function TicketForm({
+    customer, ticket,  isEditable = true, isManager = false
+}: Props) {
 
-    title: ticket?.title || "",
-    description: ticket?.description || "",
-    tech: ticket?.tech || "",
-    status: ticket?.status || "Open",
-  }
-      const { toast } = useToast()
- 
+    const { toast } = useToast()
 
-  const form = useForm<insertTicketSchemaType>({
-    mode: "onBlur",
-    resolver: zodResolver(insertTicketSchema),
-    defaultValues,
-  })
+    const defaultValues: insertTicketSchemaType = {
+        id: ticket?.id ?? "(New)",
+        customerId: ticket?.customerId ?? customer.id!,
+        title: ticket?.title ?? '',
+        description: ticket?.description ?? '',
+        completed: ticket?.completed ?? false,
+        tech: ticket?.tech.toLowerCase() ?? 'new-ticket@example.com',
+    }
 
-  const {
+    const form = useForm<insertTicketSchemaType>({
+        mode: 'onBlur',
+        resolver: zodResolver(insertTicketSchema),
+        defaultValues,
+    })
+
+    const {
         execute: executeSave,
         result: saveResult,
         isPending: isSaving,
@@ -69,36 +78,89 @@ export default function TicketForm({ customer, ticket }: Props) {
         executeSave(data)
     }
 
-  return (
-    <div className="flex flex-col gap-1 sm:px-8">
-      <div>
-                    <DisplayServerActionResponse result={saveResult} />
+    return (
+        <div className="flex flex-col gap-1 sm:px-8">
+            <DisplayServerActionResponse result={saveResult} />
+            <div>
+                <h2 className="text-2xl font-bold">
+                    {ticket?.id && isEditable
+                        ? `Edit Ticket # ${ticket.id}`
+                        : ticket?.id
+                            ? `View Ticket # ${ticket.id}`
+                            : "New Ticket Form"
+                    }
+                </h2>
+            </div>
+            <Form {...form}>
+                <form
+                    onSubmit={form.handleSubmit(submitForm)}
+                    className="flex flex-col md:flex-row gap-4 md:gap-8"
+                >
 
-        <h2 className="text">Ticket form</h2>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(submitForm)}  className=" flex flex-col  md:flex-row gap-4 md:gap-8">
-          <div className="flex flex-col gap-4 w-full max-w-xs">
+                    <div className="flex flex-col gap-4 w-full max-w-xs">
 
+                        <InputWithLabels<insertTicketSchemaType>
+                            fieldTitle="title"
+                            nameinSchema="title"
+                            disabled={!isEditable}
+                        />
 
-             <InputWithLabels<insertTicketSchemaType> fieldTitle="Title"
-                                nameinSchema="title"/>
-                               
-                                <InputWithLabels<insertTicketSchemaType> fieldTitle="Ticket ID"
-                                nameinSchema="id"/>
-                                <InputWithLabels<insertTicketSchemaType> fieldTitle="Tech"
-                                nameinSchema="tech"/>
-                                 <InputWithLabels<insertTicketSchemaType> fieldTitle="status"
-                                nameinSchema="status"/>
-                                <TextareaWithLabels<insertTicketSchemaType> fieldTitle="description"
-                                nameinSchema="description"/>
-                               
-                                
-            <Button type="submit">{isSaving ? (
+                            <InputWithLabels<insertTicketSchemaType>
+                                fieldTitle="Tech"
+                                nameinSchema="tech"
+                                disabled={!isManager}
+                            />
+                        
+
+                        {ticket?.id ? (
+                            <CheckboxWithLabel<insertTicketSchemaType>
+                                fieldTitle="Completed"
+                                nameInSchema="completed"
+                                message="Yes"
+                                disabled={!isEditable}
+                            />
+                        ) : null}
+
+                        <div className="mt-4 space-y-2">
+                            <h3 className="text-lg">Customer Info</h3>
+                            <hr className="w-4/5" />
+                            <p>{customer.fname} {customer.lname}</p>
+                            <p>{customer.address1}</p>
+                            {customer.address2 ? <p>{customer.address2}</p> : null}
+                            <p>{customer.city}, {customer.state} {customer.zip}</p>
+                            <hr className="w-4/5" />
+                            
+                            <p>Phone: {customer.phone}</p>
+                        </div>
+
+                    </div>
+
+                    <div className="flex flex-col gap-4 w-full max-w-xs">
+
+                        <TextareaWithLabels<insertTicketSchemaType>
+                            fieldTitle="Description"
+                            nameinSchema="description"
+                            className="h-96"
+                            disabled={!isEditable}
+                        />
+
+                        {isEditable ? (
+                            <div className="flex gap-2">
+                                <Button
+                                    type="submit"
+                                    className="w-3/4"
+                                    variant="default"
+                                    title="Save"
+                                    disabled={isSaving}
+                                >
+                                    {isSaving ? (
                                         <>
                                             <LoaderCircle className="animate-spin" /> Saving
                                         </>
-                                    ) : "Save"}</Button>
-                                      <Button
+                                    ) : "Save"}
+                                </Button>
+
+                                <Button
                                     type="button"
                                     variant="destructive"
                                     title="Reset"
@@ -109,10 +171,14 @@ export default function TicketForm({ customer, ticket }: Props) {
                                 >
                                     Reset
                                 </Button>
-            </div>
-          </form>
-        </Form>
-      </div>
-    </div>
-  )
+                            </div>
+                        ) : null}
+
+                    </div>
+
+                </form>
+            </Form>
+
+        </div>
+    )
 }

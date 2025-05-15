@@ -35,6 +35,7 @@ export const saveTicketAction = actionClient
                 title: ticket.title,
                 description: ticket.description,
                 tech: ticket.tech,
+                completed: ticket.completed,
             }).returning({ insertedId: tickets.id })
 
             return { message: `Ticket ID #${result[0].insertedId} created successfully` }
@@ -47,7 +48,7 @@ export const saveTicketAction = actionClient
                 customerId: ticket.customerId,
                 title: ticket.title,
                 description: ticket.description,
-                status: ticket.status,
+                completed: ticket.completed,
                 tech: ticket.tech,
             })
             .where(eq(tickets.id, ticket.id!))

@@ -27,7 +27,7 @@ export default async function Customers({
     const results = await getCustomerSearchResults(searchText)
 
     return (
-        <>Home page
+        <>
 
 
             <div className="flex flex-col gap-4">

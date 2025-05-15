@@ -6,7 +6,7 @@ export const insertTicketSchema = createInsertSchema(tickets, {
     id: z.union([z.number(), z.literal("(New)")]),
     title: (schema) => schema.min(1, "Title is required"),
     description: (schema) => schema.min(1, "Description is required"),
-  tech: z.string().min(1, "Tech is required"),
+    tech: (schema) => schema.email("Invalid email address"),
 })
 
 export const selectTicketSchema = createSelectSchema(tickets)
