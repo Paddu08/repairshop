@@ -24,7 +24,7 @@ type Props = {
 
 export default function TicketForm({ customer, ticket }: Props) {
   const defaultValues: insertTicketSchemaType = {
-    id: ticket?.id || 0,
+    id: ticket?.id ?? "(New)",
     customerId: (ticket?.customerId ?? customer.id)!,
 
     title: ticket?.title || "",
