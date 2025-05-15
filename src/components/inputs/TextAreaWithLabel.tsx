@@ -19,7 +19,7 @@ type Props<S> ={
 TextareaHTMLAttributes<HTMLTextAreaElement>
 
 
-export function InputWithLabels<S>({ fieldTitle,nameinSchema,className, ...props}: Props<S>) {
+export function TextareaWithLabels<S>({ fieldTitle,nameinSchema,className, ...props}: Props<S>) {
     const form=useFormContext()
 
     return (
