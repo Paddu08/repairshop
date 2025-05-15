@@ -18,7 +18,7 @@ import { SelectWithLabels } from "@/components/inputs/SelectWithLabel"
 
 import { CheckboxWithLabel } from "@/components/inputs/CheckboxWithLabel"
 import { DisplayServerActionResponse } from "@/components/DislayServerAction"
-import { saveCustomerAction } from "@/lib/queries/saveCustomerAction"
+import { saveCustomerAction } from "@/app/actions/saveCustomerAction"
 import { useAction } from 'next-safe-action/hooks'
 
 

@@ -10,7 +10,7 @@ import { SelectCustomerSchemaType } from "@/zod-schemas/customer"
 import { TextareaWithLabels } from "@/components/inputs/TextAreaWithLabel"
 import { DisplayServerActionResponse } from "@/components/DislayServerAction"
 import { LoaderCircle } from "lucide-react"
-import { saveTicketAction } from "@/lib/queries/saveTicketAction"
+import { saveTicketAction } from "@/app/actions/saveTicketAction"
 import { useAction } from "next-safe-action/hooks"
 
 import { useToast } from '@/hooks/use-toast'
